@@ -39,6 +39,13 @@
   - ReadInvoice
   - ReadRi
   - ReadSavingsPlan
+  - DashboardGraph
+  - ReportFilters
+  - AquaLink
+  - AQInstanceUsage
+  - AQRIManagement
+  - AQSPManagement
+  - AQRecommendation
 
 - namespace: ripple
   permissions:
