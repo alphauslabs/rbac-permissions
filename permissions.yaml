@@ -78,6 +78,10 @@
   - ModifyCustomField
   - ReadCustomService
   - ModifyCustomService
+  - AQInstanceUsage
+  - AQRIManagement
+  - AQSPManagement
+  - AQRecommendation
 
 # Discontinued.
 - namespace: ocean
