@@ -1,0 +1,33 @@
+---
+name: main
+
+on:
+  push:
+    branches: [ "master" ]
+    tags: ['*']
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    name: Build
+    if: "!contains(github.event.commits[0].message, 'ci skip')"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: 'Check changed files'
+      id: changed-files
+      uses: tj-actions/changed-files@v47
+      with:
+        files: |
+          **.yaml
+
+    - name: 'List all changed files'
+      if: steps.changed-files.outputs.any_changed == 'true'
+      env:
+        ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+      run: |
+        for file in ${ALL_CHANGED_FILES}; do
+          echo "$file was changed"
+        done
