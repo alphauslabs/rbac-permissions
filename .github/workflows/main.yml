@@ -35,6 +35,9 @@ jobs:
             SVC_ACCT_JSON=/tmp/ouchan-ci-sa.json
             echo "$OUCHAN_CI_PROD_SA_JSON" > $SVC_ACCT_JSON
             gcloud auth activate-service-account --key-file $SVC_ACCT_JSON
+            if ! gcloud secrets versions access latest --secret rbac-permissions-yaml --project mobingi-main > /dev/null 2>&1; then
+              gcloud secrets create rbac-permissions-yaml --project mobingi-main
+            fi
             gcloud secrets versions add rbac-permissions-yaml --data-file "$file" --project mobingi-main
           fi
         done
