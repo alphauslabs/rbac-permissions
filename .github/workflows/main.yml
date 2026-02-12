@@ -1,5 +1,5 @@
 ---
-name: main
+name: Main
 
 on:
   push:
@@ -29,5 +29,7 @@ jobs:
         ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
       run: |
         for file in ${ALL_CHANGED_FILES}; do
-          echo "$file was changed"
+          if [[ "$file" == "permissions.yaml" ]]; then
+            echo "$file was changed"
+          fi
         done
