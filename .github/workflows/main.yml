@@ -39,5 +39,10 @@ jobs:
               gcloud secrets create rbac-permissions-yaml --project mobingi-main
             fi
             gcloud secrets versions add rbac-permissions-yaml --data-file "$file" --project mobingi-main
+            PREV_VER_URI=$(gcloud secrets versions list rbac-permissions-yaml --filter "state=ENABLED" --sort-by "~createTime" --limit 2 --uri | tail -n 1)
+            echo "Previous version: $PREV_VER_URI"
+            DELIMITER="/"
+            LAST_VER=$(echo "$PREV_VER_URI" | awk -F "$DELIMITER" '{print $NF}')
+            echo "Last version: $LAST_VER"
           fi
         done
