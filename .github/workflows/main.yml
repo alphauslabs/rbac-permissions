@@ -23,13 +23,18 @@ jobs:
         files: |
           **.yaml
 
-    - name: 'List all changed files'
+    - name: 'Update SM if updated'
       if: steps.changed-files.outputs.any_changed == 'true'
       env:
         ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+        OUCHAN_CI_PROD_SA_JSON: ${{ secrets.OUCHAN_CI_PROD_SA_JSON }}
       run: |
         for file in ${ALL_CHANGED_FILES}; do
           if [[ "$file" == "permissions.yaml" ]]; then
             echo "$file was changed"
+            SVC_ACCT_JSON=/tmp/ouchan-ci-sa.json
+            echo "$OUCHAN_CI_PROD_SA_JSON" > $SVC_ACCT_JSON
+            gcloud auth activate-service-account --key-file $SVC_ACCT_JSON
+            gcloud secrets list
           fi
         done
