@@ -31,17 +31,18 @@ jobs:
       run: |
         for file in ${ALL_CHANGED_FILES}; do
           if [[ "$file" == "permissions.yaml" ]]; then
-            echo "$file was changed"
+            SECRET=rbac-permissions-yaml
             SVC_ACCT_JSON=/tmp/ouchan-ci-sa.json
             echo "$OUCHAN_CI_PROD_SA_JSON" > $SVC_ACCT_JSON
             gcloud auth activate-service-account --key-file $SVC_ACCT_JSON
-            if ! gcloud secrets versions access latest --secret rbac-permissions-yaml --project mobingi-main > /dev/null 2>&1; then
-              gcloud secrets create rbac-permissions-yaml --project mobingi-main
+            if ! gcloud secrets versions access latest --secret $SECRET --project mobingi-main > /dev/null 2>&1; then
+              gcloud secrets create $SECRET --project mobingi-main
             fi
-            gcloud secrets versions add rbac-permissions-yaml --data-file "$file" --project mobingi-main
-            PREV_VER_URI=$(gcloud secrets versions list rbac-permissions-yaml --filter "state=ENABLED" --sort-by "~createTime" --limit 2 --uri --project mobingi-main | tail -n 1)
+            gcloud secrets versions add $SECRET --data-file "$file" --project mobingi-main
+            # Delete previous versions; SM is priced by versions.
+            PREV_VER_URI=$(gcloud secrets versions list $SECRET --filter "state=ENABLED" --sort-by "~createTime" --limit 2 --uri --project mobingi-main | tail -n 1)
             DELIMITER="/"
             LAST_VER=$(echo "$PREV_VER_URI" | awk -F "$DELIMITER" '{print $NF}')
-            gcloud secrets versions destroy $LAST_VER --secret rbac-permissions-yaml --project mobingi-main --quiet
+            gcloud secrets versions destroy $LAST_VER --secret $SECRET --project mobingi-main --quiet
           fi
         done
