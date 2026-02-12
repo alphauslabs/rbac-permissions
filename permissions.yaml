@@ -1,3 +1,4 @@
+---
 - namespace: dashboard
   permissions:
   - Admin
